@@ -1,0 +1,16 @@
+{
+  "name": "clickstream-import",
+  "connector.class": "org.apache.kafka.connect.file.FileStreamSourceConnector",
+  "tasks.max": 1,
+  "topic": "clickstream-v01",
+  "key.converter": "io.confluent.connect.avro.AvroConverter",
+  "key.converter.schema.registry.url": "http://localhost:8081",
+  "value.converter": "io.confluent.connect.avro.AvroConverter",
+  "value.converter.schema.registry.url": "http://localhost:8081",
+  "connection.url": "jdbc:postgresql://localhost:5432",
+  "connection.user": "postgres",
+  "connection.password": "postgres",
+  "table.whitelist": "clickstream",
+  "mode": "incrementing.column.name",
+  "incrementing.column.name": "event_id"
+}
