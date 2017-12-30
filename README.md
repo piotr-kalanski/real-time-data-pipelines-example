@@ -3,6 +3,10 @@ Example real time data pipelines using Kafka Connect and Kafka Streams
 
 # Run instruction
 
+## Run docker containers
+
+    docker-compose up kafka-cluster elasticsearch kibana postgres
+
 ## Run generators
 
 ### clickstream-generator

@@ -1,4 +1,5 @@
 {
+  "namespace": "com.github.piotrkalanski",
   "type": "record",
   "name": "clickstream",
   "fields": [
