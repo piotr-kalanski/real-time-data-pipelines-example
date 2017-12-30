@@ -23,7 +23,7 @@ public class ClickstreamGenerator {
         // create table
         connection.createStatement().execute("" +
                 "CREATE TABLE CLICKSTREAM (\n" +
-                "  event_id VARCHAR(100) NOT NULL PRIMARY KEY,\n" +
+                "  event_id INTEGER NOT NULL PRIMARY KEY,\n" +
                 "  event_type VARCHAR(100) NOT NULL,\n" +
                 "  event_date TIMESTAMP NOT NULL,\n" +
                 "  user_id VARCHAR(100),\n" +
@@ -55,7 +55,7 @@ public class ClickstreamGenerator {
                     "device" +
                     ")" +
                     "VALUES(" +
-                    "'" + eventId + "'," +
+                    "" + eventId + "," +
                     "'" + event_type + "'," +
                     "'" + event_date + "'," +
                     "'" + user_id + "'," +
