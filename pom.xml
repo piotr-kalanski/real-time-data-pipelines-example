@@ -11,6 +11,7 @@
         <module>clickstream-generator</module>
         <module>clickstream-import</module>
         <module>user-profile-stream</module>
+        <module>user-profile-stream-json</module>
     </modules>
 
     <packaging>pom</packaging>
