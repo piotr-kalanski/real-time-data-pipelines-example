@@ -1,0 +1,18 @@
+{
+  "name": "clickstream-json",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "tasks.max": 1,
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable" : false,
+    "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+    "table.whitelist": "clickstream",
+    "mode": "incrementing",
+    "incrementing.column.name": "event_id",
+    "topic.prefix": "json-"
+  }
+}
