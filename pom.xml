@@ -12,6 +12,7 @@
         <module>clickstream-import</module>
         <module>user-profile-stream</module>
         <module>user-profile-stream-json</module>
+        <module>user-profile-es-json</module>
     </modules>
 
     <packaging>pom</packaging>

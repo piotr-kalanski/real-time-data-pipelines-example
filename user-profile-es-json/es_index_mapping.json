@@ -1,0 +1,7 @@
+{
+  "properties": {
+    "user_id": { "type": "integer" },
+    "actions_count": { "type": "integer" },
+    "last_action": {"type": "date", "format": "epoch_millis"}
+  }
+}

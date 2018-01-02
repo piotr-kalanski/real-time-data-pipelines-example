@@ -1,0 +1,19 @@
+{
+  "name": "user-profile-export-es-json",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "tasks.max": 1,
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable" : false,
+    "schema.ignore": true,
+    "topics": "user-profile-json-v01",
+    "connection.url": "http://elasticsearch:9200",
+    "type.name": "user-profile",
+    "key.ignore": true,
+    "topic.index.map": "user-profile-json-v01:user-profile-json",
+    "topic.key.ignore": true,
+    "topic.schema.ignore": true
+  }
+}
