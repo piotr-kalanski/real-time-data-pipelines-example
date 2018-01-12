@@ -13,6 +13,7 @@
         <module>user-profile-stream</module>
         <module>user-profile-stream-json</module>
         <module>user-profile-es-json</module>
+        <module>user-profile-es-avro</module>
     </modules>
 
     <packaging>pom</packaging>

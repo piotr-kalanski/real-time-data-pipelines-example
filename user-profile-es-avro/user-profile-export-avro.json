@@ -1,0 +1,25 @@
+{
+  "name": "user-profile-export-es-avro",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "tasks.max": 1,
+
+    "_comment": "Message serializer",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter.schema.registry.url": "http://localhost:8081",
+
+    "topics": "user-profile-v01",
+
+    "_comment": "ElasticSearch connector specific configuration",
+    "connection.url": "http://elasticsearch:9200",
+    "type.name": "user-profile",
+    "topic.index.map": "user-profile-v01:user-profile-avro",
+
+    "_comment": "Whether to ignore the record key for the purpose of forming the Elasticsearch document ID",
+    "key.ignore": true,
+
+    "_comment": "Record schema will be ignored for the purpose of registering an Elasticsearch mapping. ",
+    "schema.ignore": true
+  }
+}

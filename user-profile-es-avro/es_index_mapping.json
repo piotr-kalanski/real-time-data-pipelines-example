@@ -1,0 +1,39 @@
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 1
+    }
+  },
+  "mappings": {
+    "user-profile": {
+      "properties": {
+        "user_id": {
+          "type": "text"
+        },
+        "actions_count": {
+          "type": "long",
+          "null_value": 0
+        },
+        "last_action": {
+          "type": "date",
+          "format": "epoch_millis"
+        },
+        "favourite_device": {
+          "type": "text"
+        },
+        "device_usage": {
+          "properties": {
+            "device": {
+              "type": "text"
+            },
+            "actions_count": {
+              "type": "long",
+              "null_value": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}
