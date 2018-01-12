@@ -1,5 +1,5 @@
 {
-  "name": "clickstream-json",
+  "name": "clickstream-import-json",
   "config": {
     "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
     "tasks.max": 1,
