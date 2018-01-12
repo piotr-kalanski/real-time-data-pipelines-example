@@ -17,7 +17,7 @@
     "topic.index.map": "user-profile-v01:user-profile-avro",
 
     "_comment": "Whether to ignore the record key for the purpose of forming the Elasticsearch document ID",
-    "key.ignore": true,
+    "key.ignore": false,
 
     "_comment": "Record schema will be ignored for the purpose of registering an Elasticsearch mapping. ",
     "schema.ignore": true
