@@ -19,14 +19,14 @@
     "table.whitelist": "clickstream",
     "mode": "incrementing",
     "incrementing.column.name": "event_id",
-    "topic.prefix": "avro-",
+    "topic.prefix": "raw-avro-",
 
     "_comment": "SMT settings",
     "transforms": "setSchema, setKey",
 
     "_comment": "Providing namespace for value schema",
     "transforms.setSchema.type": "org.apache.kafka.connect.transforms.SetSchemaMetadata$Value",
-    "transforms.setSchema.schema.name": "com.datawizards.clickstream",
+    "transforms.setSchema.schema.name": "com.github.piotrkalanski.Clickstream",
     "transforms.setSchema.schema.version": "1",
 
     "_comment": "Setting message key based on user_id field",

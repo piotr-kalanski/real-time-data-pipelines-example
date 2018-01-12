@@ -13,6 +13,6 @@
     "table.whitelist": "clickstream",
     "mode": "incrementing",
     "incrementing.column.name": "event_id",
-    "topic.prefix": "json-"
+    "topic.prefix": "raw-json-"
   }
 }
