@@ -3,10 +3,7 @@ package com.datawizards.generator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Date;
 import java.util.Random;
 
@@ -17,12 +14,9 @@ public class ClickstreamGenerator {
         Class.forName("org.postgresql.Driver");
         Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432", "postgres", "postgres");
 
-        // delete table
-        connection.createStatement().execute("DROP TABLE IF EXISTS CLICKSTREAM;");
-
         // create table
         connection.createStatement().execute("" +
-                "CREATE TABLE CLICKSTREAM (\n" +
+                "CREATE TABLE IF NOT EXISTS CLICKSTREAM (\n" +
                 "  event_id INTEGER NOT NULL PRIMARY KEY,\n" +
                 "  event_type VARCHAR(100) NOT NULL,\n" +
                 "  event_date TIMESTAMP NOT NULL,\n" +
@@ -32,10 +26,18 @@ public class ClickstreamGenerator {
                 ");"
         );
 
+        // get last event id
+        ResultSet rs = connection.createStatement().executeQuery("SELECT max(event_id) as event_id FROM CLICKSTREAM");
+        int eventId = 1;
+        if(rs.next()) {
+            eventId = rs.getInt("event_id") + 1;
+        }
+
+        log.info("First event id: " + eventId);
+
         Random r = new Random();
         String[] eventTypes = new String[] {"LISTING_VIEW", "APPLICATION", "LOGIN", "REGISTER"};
         String[] devices = new String[] {"DESKTOP", "MOBILE_APP", "MOBILE_WWW", "TABLE_WWW"};
-        int eventId = 1;
 
         // Start generating data
         while(true) {
