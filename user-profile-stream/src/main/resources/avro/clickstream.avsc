@@ -1,7 +1,7 @@
 {
-  "namespace": "com.github.piotrkalanski",
   "type": "record",
-  "name": "clickstream",
+  "name": "Clickstream",
+  "namespace": "com.github.piotrkalanski",
   "fields": [
     {
       "name": "event_id",
@@ -45,5 +45,6 @@
       "default": null
     }
   ],
-  "connect.name": "clickstream"
+  "connect.version": 1,
+  "connect.name": "com.github.piotrkalanski.Clickstream"
 }

@@ -3,6 +3,7 @@ package com.github.piotrkalanski;
 import com.datawizards.kafka.streams.app.KafkaStreamsApplicationBase;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KStreamBuilder;
 import org.apache.kafka.streams.kstream.KTable;
@@ -13,8 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ApplicationMain extends KafkaStreamsApplicationBase {
-    private static final String CLICKSTREAM_TOPIC = "raw-clickstream";
-    private static final String OUTPUT_TOPIC = "user-profile-v1";
+    private static final String CLICKSTREAM_TOPIC = "raw-avro-clickstream";
+    private static final String OUTPUT_TOPIC = "user-profile-v01";
 
     public static void main(String[] args) {
         ApplicationMain app = new ApplicationMain();
@@ -25,17 +26,20 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
         SpecificAvroSerde<UserProfile> userProfileSpecificAvroSerde = new SpecificAvroSerde<>();
         userProfileSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
 
-        KStream<String, clickstream> userActions = builder.stream(CLICKSTREAM_TOPIC);
+        SpecificAvroSerde<Clickstream> clickstreamSpecificAvroSerde = new SpecificAvroSerde<>();
+        clickstreamSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
+
+        KStream<String, Clickstream> userActions = builder.stream(Serdes.String(), clickstreamSpecificAvroSerde, CLICKSTREAM_TOPIC);
 
         KTable<String, UserProfile> userProfile = userActions
-                .groupByKey()
+                .groupByKey(Serdes.String(), clickstreamSpecificAvroSerde)
                 .aggregate(
                         this::emptyProfile,
                         this::aggregateProfile,
                         userProfileSpecificAvroSerde
                 );
 
-        userProfile.to(OUTPUT_TOPIC);
+        userProfile.to(Serdes.String(), userProfileSpecificAvroSerde, OUTPUT_TOPIC);
     }
 
     private UserProfile emptyProfile() {
@@ -45,7 +49,7 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
                 .build();
     }
 
-    private UserProfile aggregateProfile(String userId, clickstream action, UserProfile userProfile) {
+    private UserProfile aggregateProfile(String userId, Clickstream action, UserProfile userProfile) {
         List<DeviceUsage> deviceUsage = calculateDeviceUsage(action, userProfile.getDeviceUsage());
 
         return UserProfile
@@ -58,7 +62,7 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
                 .build();
     }
 
-    protected List<DeviceUsage> calculateDeviceUsage(clickstream action, List<DeviceUsage> oldDeviceUsage) {
+    protected List<DeviceUsage> calculateDeviceUsage(Clickstream action, List<DeviceUsage> oldDeviceUsage) {
         if(oldDeviceUsage.stream().allMatch(d -> !d.getDevice().equals(action.getDevice()))) {
             if(action.getDevice() != null) {
                 oldDeviceUsage.add(

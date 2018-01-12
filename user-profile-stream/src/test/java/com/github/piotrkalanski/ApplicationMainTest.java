@@ -29,7 +29,7 @@ public class ApplicationMainTest {
         List<DeviceUsage> expectedDevices = Arrays.asList(
                 DeviceUsage.newBuilder().setDevice("DESKTOP").setActionsCount(1L).build()
         );
-        clickstream action = clickstream
+        Clickstream action = Clickstream
                 .newBuilder()
                 .setEventId(1)
                 .setEventType("LV")
@@ -48,7 +48,7 @@ public class ApplicationMainTest {
         List<DeviceUsage> expectedDevices = Arrays.asList(
                 DeviceUsage.newBuilder().setDevice("DESKTOP").setActionsCount(1L).build()
         );
-        clickstream action = clickstream
+        Clickstream action = Clickstream
                 .newBuilder()
                 .setEventId(1)
                 .setEventType("LV")
@@ -68,7 +68,7 @@ public class ApplicationMainTest {
                 DeviceUsage.newBuilder().setDevice("DESKTOP").setActionsCount(1L).build(),
                 DeviceUsage.newBuilder().setDevice("MOBILE").setActionsCount(1L).build()
         );
-        clickstream action = clickstream
+        Clickstream action = Clickstream
                 .newBuilder()
                 .setEventId(1)
                 .setEventType("LV")
@@ -89,7 +89,7 @@ public class ApplicationMainTest {
                 DeviceUsage.newBuilder().setDevice("DESKTOP").setActionsCount(2L).build(),
                 DeviceUsage.newBuilder().setDevice("MOBILE").setActionsCount(1L).build()
         );
-        clickstream action = clickstream
+        Clickstream action = Clickstream
                 .newBuilder()
                 .setEventId(1)
                 .setEventType("LV")
