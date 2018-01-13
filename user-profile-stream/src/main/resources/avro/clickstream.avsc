@@ -1,50 +1,87 @@
-{
-  "type": "record",
-  "name": "Clickstream",
-  "namespace": "com.github.piotrkalanski",
-  "fields": [
-    {
-      "name": "event_id",
-      "type": "int"
-    },
-    {
-      "name": "event_type",
-      "type": "string"
-    },
-    {
-      "name": "event_date",
-      "type": {
-        "type": "long",
-        "connect.version": 1,
-        "connect.name": "org.apache.kafka.connect.data.Timestamp",
-        "logicalType": "timestamp-millis"
+[
+  {
+    "type": "record",
+    "name": "Clickstream",
+    "namespace": "com.github.piotrkalanski",
+    "fields": [
+      {
+        "name": "event_id",
+        "type": "int"
+      },
+      {
+        "name": "event_type",
+        "type": "string"
+      },
+      {
+        "name": "event_date",
+        "type": {
+          "type": "long",
+          "connect.version": 1,
+          "connect.name": "org.apache.kafka.connect.data.Timestamp",
+          "logicalType": "timestamp-millis"
+        }
+      },
+      {
+        "name": "user_id",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
+      },
+      {
+        "name": "listing_id",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
+      },
+      {
+        "name": "device",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
       }
-    },
-    {
-      "name": "user_id",
-      "type": [
-        "null",
-        "string"
-      ],
-      "default": null
-    },
-    {
-      "name": "listing_id",
-      "type": [
-        "null",
-        "string"
-      ],
-      "default": null
-    },
-    {
-      "name": "device",
-      "type": [
-        "null",
-        "string"
-      ],
-      "default": null
-    }
-  ],
-  "connect.version": 1,
-  "connect.name": "com.github.piotrkalanski.Clickstream"
-}
+    ],
+    "connect.version": 1,
+    "connect.name": "com.github.piotrkalanski.Clickstream"
+  },
+  {
+    "type": "record",
+    "name": "EnrichedClickstream",
+    "namespace": "com.github.piotrkalanski",
+    "fields": [
+      {
+        "name": "clickstream_event",
+        "type": "com.github.piotrkalanski.Clickstream"
+      },
+      {
+        "name": "listing_job_title",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
+      },
+      {
+        "name": "listing_discipline",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
+      },
+      {
+        "name": "listing_city",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
+      }
+    ]
+  }
+]
