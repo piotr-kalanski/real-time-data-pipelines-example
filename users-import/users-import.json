@@ -5,8 +5,7 @@
     "tasks.max": 1,
 
     "_comment": "Message serializer",
-    "key.converter": "io.confluent.connect.avro.AvroConverter",
-    "key.converter.schema.registry.url": "http://localhost:8081",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter.schema.registry.url": "http://localhost:8081",
 
@@ -22,7 +21,7 @@
     "topic.prefix": "raw-avro-",
 
     "_comment": "SMT settings",
-    "transforms": "setSchema, setKey",
+    "transforms": "setSchema, setKey, extractKeyField",
 
     "_comment": "Providing namespace for value schema",
     "transforms.setSchema.type": "org.apache.kafka.connect.transforms.SetSchemaMetadata$Value",
@@ -31,6 +30,8 @@
 
     "_comment": "Setting message key based on user_id field",
     "transforms.setKey.type": "org.apache.kafka.connect.transforms.ValueToKey",
-    "transforms.setKey.fields": "user_id"
+    "transforms.setKey.fields": "user_id",
+    "transforms.extractKeyField.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractKeyField.field": "user_id"
   }
 }
