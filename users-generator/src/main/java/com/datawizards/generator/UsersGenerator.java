@@ -7,11 +7,13 @@ import java.sql.*;
 import java.util.Random;
 
 public class UsersGenerator {
-    public static void main(String[] args) throws ClassNotFoundException, SQLException, InterruptedException {
-        Logger log = LoggerFactory.getLogger("com.datawizards.generator.UsersGenerator");
+    private static Logger log = LoggerFactory.getLogger("UsersGenerator");
 
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, InterruptedException {
         Class.forName("org.postgresql.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432", "postgres", "postgres");
+        String host = System.getenv().getOrDefault("POSTGRES_HOST", "localhost");
+        // retry connecting with DB
+        Connection connection = tryConnecting(host, 5);
 
         // create table
         connection.createStatement().execute("" +
@@ -64,6 +66,19 @@ public class UsersGenerator {
             log.info("Inserted user id: " + userId);
             Thread.sleep(1000);
             userId++;
+        }
+    }
+
+    private static Connection tryConnecting(String host, int retries) throws InterruptedException {
+        if (retries == 0)
+            throw new RuntimeException("Connection with DB not working!");
+
+        try {
+            log.info("Connecting with DB " + host);
+            return DriverManager.getConnection("jdbc:postgresql://" + host + ":5432", "postgres", "postgres");
+        } catch (Exception e) {
+            Thread.sleep(1000 * retries);
+            return tryConnecting(host, retries-1);
         }
     }
 }

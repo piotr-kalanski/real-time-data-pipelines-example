@@ -7,23 +7,20 @@ Example real time data pipelines using Kafka Connect and Kafka Streams
 
 # Run instruction
 
+## Build Java applications
+
+    mvn package
+
 ## Run docker containers
 
-    docker-compose up kafka-cluster elasticsearch kibana postgres
+    docker-compose up
 
-## Run generators
-
-### clickstream-generator
-
-Run main from class [ClickstreamGenerator](clickstream-generator/src/main/java/com/datawizards/generator/ClickstreamGenerator.java).
-
-### users-generator
-
-Run main from class [UsersGenerator](users-generator/src/main/java/com/datawizards/generator/UsersGenerator.java).
-
-### listings-generator
-
-Run main from class [ListingsGenerator](listings-generator/src/main/java/com/datawizards/generator/ListingsGenerator.java).
+This will run all services:
+- Kafka cluster with related services (Zookeeper, Avro schema registry, landoop UI)
+- Elasticsearch
+- Kibana
+- Postgres
+- All Java generators
 
 ## Run import connectors
 
@@ -34,6 +31,10 @@ Run script [clickstream_import.sh](clickstream-import/clickstream_import.sh).
 ### users-import
 
 Run script [users_import.sh](users-import/users_import.sh).
+
+### listings-import
+
+Run script [listings_import.sh](listings-import/listings_import.sh).
 
 ## Run stream application
 

@@ -58,3 +58,24 @@ services:
     environment:
       SERVER_HTTP_PORT: 9001
     restart: always
+
+  clickstream-generator:
+    image: pkalanski/clickstreamgenerator:1.0-SNAPSHOT
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:
+      - postgres
+
+  users-generator:
+    image: pkalanski/usersgenerator:1.0-SNAPSHOT
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:
+          - postgres
+
+  listings-generator:
+    image: pkalanski/listingsgenerator:1.0-SNAPSHOT
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:
+          - postgres
