@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  clickstream-generator:
+    image: piotrkalanski/clickstreamgenerator:1.0-SNAPSHOT
+    environment:
+      POSTGRES_HOST: localhost
+
+  users-generator:
+    image: piotrkalanski/usersgenerator:1.0-SNAPSHOT
+    environment:
+      POSTGRES_HOST: localhost
+
+  listings-generator:
+    image: piotrkalanski/listingsgenerator:1.0-SNAPSHOT
+    environment:
+      POSTGRES_HOST: localhost
+
+  user-profile-stream:
+    image: piotrkalanski/userprofilestream:1.0-SNAPSHOT

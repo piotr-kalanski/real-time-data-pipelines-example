@@ -85,7 +85,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>pkalanski/usersgenerator</repository>
+                    <repository>piotrkalanski/usersgenerator</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
