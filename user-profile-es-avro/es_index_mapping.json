@@ -32,6 +32,9 @@
               "null_value": 0
             }
           }
+        },
+        "listings": {
+          "type": "text"
         }
       }
     }

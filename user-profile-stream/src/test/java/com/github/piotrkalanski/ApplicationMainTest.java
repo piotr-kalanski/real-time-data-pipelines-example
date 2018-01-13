@@ -99,4 +99,36 @@ public class ApplicationMainTest {
 
         assertEquals(expectedDevices, app.calculateDeviceUsage(action, oldDevices));
     }
+
+    @Test
+    public void testAddNewListing() {
+        List<CharSequence> initListings = new LinkedList<>();
+        initListings.add("listing1");
+        initListings.add("listing2");
+        Clickstream action = Clickstream
+                .newBuilder()
+                .setEventId(1)
+                .setEventType("LV")
+                .setEventDate(DateTime.now())
+                .setListingId("listing3")
+                .build();
+        List<String> expected = Arrays.asList("listing1", "listing2", "listing3");
+
+        assertEquals(expected, app.calculateListings(initListings, action));
+    }
+
+    @Test
+    public void testAddExistingListing() {
+        List<CharSequence> initListings = Arrays.asList("listing1", "listing2");
+        Clickstream action = Clickstream
+                .newBuilder()
+                .setEventId(1)
+                .setEventType("LV")
+                .setEventDate(DateTime.now())
+                .setListingId("listing2")
+                .build();
+        List<String> expected = Arrays.asList("listing1", "listing2");
+
+        assertEquals(expected, app.calculateListings(initListings, action));
+    }
 }

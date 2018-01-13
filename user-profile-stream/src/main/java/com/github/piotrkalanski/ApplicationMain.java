@@ -59,6 +59,7 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
                 .setLastAction(action.getEventDate().getMillis())
                 .setDeviceUsage(deviceUsage)
                 .setFavouriteDevice(calculateFavouriteDevice(deviceUsage))
+                .setListings(calculateListings(userProfile.getListings(), action))
                 .build();
     }
 
@@ -96,4 +97,9 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
                 .getDevice();
     }
 
+    protected List<CharSequence> calculateListings(List<CharSequence> listings, Clickstream action) {
+        if(!listings.stream().anyMatch(x -> x.equals(action.getListingId())))
+            listings.add(action.getListingId());
+        return listings;
+    }
 }
