@@ -15,7 +15,7 @@
     "fields": [
       {"name": "user_id", "type": "string"},
       {"name": "actions_count", "type": "long", "default": 0},
-      {"name": "last_action", "type": { "type" : "long", "logicalType" : "timestamp-millis" }, "default": 0},
+      {"name": "last_action", "type": { "type" : "long" }, "default": 0},
       {"name": "favourite_device", "type": ["null", "string"], "default": null},
       {"name": "device_usage", "type": {"type": "array", "items": "com.github.piotrkalanski.DeviceUsage"}, "default": []}
     ]

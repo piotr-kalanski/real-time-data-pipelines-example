@@ -56,7 +56,7 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
                 .newBuilder()
                 .setUserId(userId)
                 .setActionsCount(userProfile.getActionsCount() + 1)
-                .setLastAction(action.getEventDate())
+                .setLastAction(action.getEventDate().getMillis())
                 .setDeviceUsage(deviceUsage)
                 .setFavouriteDevice(calculateFavouriteDevice(deviceUsage))
                 .build();
