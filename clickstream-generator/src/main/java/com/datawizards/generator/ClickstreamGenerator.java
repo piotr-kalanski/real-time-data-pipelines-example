@@ -41,11 +41,11 @@ public class ClickstreamGenerator {
 
         // Start generating data
         while(true) {
-            String event_type = eventTypes[r.nextInt(eventTypes.length-1)];
+            String event_type = eventTypes[r.nextInt(eventTypes.length)];
             Date event_date = new Date();
             String user_id = "" + r.nextInt(100);
             String listing_id = "" + r.nextInt(100);
-            String device = devices[r.nextInt(devices.length-1)];
+            String device = devices[r.nextInt(devices.length)];
 
             Statement statement = connection.createStatement();
             String query = "INSERT INTO CLICKSTREAM(" +

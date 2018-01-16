@@ -14,6 +14,8 @@
         <module>user-profile-stream-json</module>
         <module>user-profile-es-json</module>
         <module>user-profile-es-avro</module>
+        <module>users-generator</module>
+        <module>users-import</module>
     </modules>
 
     <packaging>pom</packaging>
