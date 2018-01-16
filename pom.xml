@@ -16,6 +16,8 @@
         <module>user-profile-es-avro</module>
         <module>users-generator</module>
         <module>users-import</module>
+        <module>listings-generator</module>
+        <module>listings-import</module>
     </modules>
 
     <packaging>pom</packaging>

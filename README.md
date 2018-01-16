@@ -21,6 +21,10 @@ Run main from class [ClickstreamGenerator](clickstream-generator/src/main/java/c
 
 Run main from class [UsersGenerator](users-generator/src/main/java/com/datawizards/generator/UsersGenerator.java).
 
+### listings-generator
+
+Run main from class [ListingsGenerator](listings-generator/src/main/java/com/datawizards/generator/ListingsGenerator.java).
+
 ## Run import connectors
 
 ### clickstream-import
