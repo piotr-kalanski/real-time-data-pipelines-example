@@ -131,4 +131,27 @@ public class ApplicationMainTest {
 
         assertEquals(expected, app.calculateListings(initListings, action));
     }
+
+    @Test
+    public void testMergeUserProfileWithUser() {
+        UserProfile userProfile = UserProfile
+                .newBuilder()
+                .setUserId("???")
+                .build();
+        User user = User
+                .newBuilder()
+                .setUserId(1)
+                .setUserName("name")
+                .setGender("gender")
+                .setTitle("title")
+                .setCity("city")
+                .build();
+
+        app.mergeUserProfileWithUser(userProfile, user);
+
+        assertEquals(user.getUserName(), userProfile.getUserName());
+        assertEquals(user.getCity(), userProfile.getUserCity());
+        assertEquals(user.getTitle(), userProfile.getUserTitle());
+        assertEquals(user.getGender(), userProfile.getUserGender());
+    }
 }

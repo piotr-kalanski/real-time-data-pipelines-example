@@ -1,0 +1,25 @@
+{
+  "type": "record",
+  "name": "Listing",
+  "namespace": "com.github.piotrkalanski",
+  "fields": [
+    {
+      "name": "listing_id",
+      "type": "int"
+    },
+    {
+      "name": "job_title",
+      "type": "string"
+    },
+    {
+      "name": "discipline",
+      "type": "string"
+    },
+    {
+      "name": "city",
+      "type": "string"
+    }
+  ],
+  "connect.version": 1,
+  "connect.name": "com.github.piotrkalanski.Listing"
+}

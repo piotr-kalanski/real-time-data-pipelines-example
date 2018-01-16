@@ -1,0 +1,33 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.github.piotrkalanski",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "int"
+    },
+    {
+      "name": "user_name",
+      "type": "string"
+    },
+    {
+      "name": "title",
+      "type": "string"
+    },
+    {
+      "name": "gender",
+      "type": "string"
+    },
+    {
+      "name": "city",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    }
+  ],
+  "connect.version": 1,
+  "connect.name": "com.github.piotrkalanski.User"
+}

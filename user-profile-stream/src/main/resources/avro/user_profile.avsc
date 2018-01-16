@@ -18,7 +18,11 @@
       {"name": "last_action", "type": { "type" : "long" }, "default": 0},
       {"name": "favourite_device", "type": ["null", "string"], "default": null},
       {"name": "device_usage", "type": {"type": "array", "items": "com.github.piotrkalanski.DeviceUsage"}, "default": []},
-      {"name": "listings", "type": {"type": "array", "items": "string"}, "default": []}
+      {"name": "listings", "type": {"type": "array", "items": "string"}, "default": []},
+      {"name": "user_name", "type": ["null", "string"], "default": null},
+      {"name": "user_title", "type": ["null", "string"], "default": null},
+      {"name": "user_gender", "type": ["null", "string"], "default": null},
+      {"name": "user_city", "type": ["null", "string"], "default": null}
     ]
   }
 ]

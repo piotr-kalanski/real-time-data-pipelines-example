@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class ApplicationMain extends KafkaStreamsApplicationBase {
     private static final String CLICKSTREAM_TOPIC = "raw-avro-clickstream";
+    private static final String USERS_TOPIC = "raw-avro-users";
     private static final String OUTPUT_TOPIC = "user-profile-v01";
 
     public static void main(String[] args) {
@@ -29,9 +30,13 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
         SpecificAvroSerde<Clickstream> clickstreamSpecificAvroSerde = new SpecificAvroSerde<>();
         clickstreamSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
 
-        KStream<String, Clickstream> userActions = builder.stream(Serdes.String(), clickstreamSpecificAvroSerde, CLICKSTREAM_TOPIC);
+        SpecificAvroSerde<User> usersSpecificAvroSerde = new SpecificAvroSerde<>();
+        usersSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
 
-        KTable<String, UserProfile> userProfile = userActions
+        KStream<String, Clickstream> userActions = builder.stream(Serdes.String(), clickstreamSpecificAvroSerde, CLICKSTREAM_TOPIC);
+        KTable<String, User> users = builder.table(Serdes.String(), usersSpecificAvroSerde, USERS_TOPIC);
+
+        KTable<String, UserProfile> usersProfiles = userActions
                 .groupByKey(Serdes.String(), clickstreamSpecificAvroSerde)
                 .aggregate(
                         this::emptyProfile,
@@ -39,7 +44,9 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
                         userProfileSpecificAvroSerde
                 );
 
-        userProfile.to(Serdes.String(), userProfileSpecificAvroSerde, OUTPUT_TOPIC);
+        usersProfiles.join(users, this::mergeUserProfileWithUser);
+
+        usersProfiles.to(Serdes.String(), userProfileSpecificAvroSerde, OUTPUT_TOPIC);
     }
 
     private UserProfile emptyProfile() {
@@ -101,5 +108,13 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
         if(!listings.stream().anyMatch(x -> x.equals(action.getListingId())))
             listings.add(action.getListingId());
         return listings;
+    }
+
+    protected UserProfile mergeUserProfileWithUser(UserProfile userProfile, User user) {
+        userProfile.setUserName(user.getUserName());
+        userProfile.setUserTitle(user.getTitle());
+        userProfile.setUserCity(user.getCity());
+        userProfile.setUserGender(user.getGender());
+        return userProfile;
     }
 }
