@@ -19,10 +19,11 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
 
     private UserProfileService userProfileService = new UserProfileService();
 
-    private SpecificAvroSerde<UserProfile> userProfileSpecificAvroSerde;
     private SpecificAvroSerde<Clickstream> clickstreamSpecificAvroSerde;
+    private SpecificAvroSerde<EnrichedClickstream> enrichedClickstreamSpecificAvroSerde;
     private SpecificAvroSerde<User> usersSpecificAvroSerde;
     private SpecificAvroSerde<Listing> listingsSpecificAvroSerde;
+    private SpecificAvroSerde<UserProfile> userProfileSpecificAvroSerde;
 
     private KStream<String, Clickstream> userActions;
     private KTable<String, User> users;
@@ -36,15 +37,13 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
     protected void buildTopology(KStreamBuilder builder) {
         initSerdes();
         readFromKafka(builder);
-        KTable<String, UserProfile> userProfiles = aggregateClickstream();
+        KStream<String, EnrichedClickstream> enrichedClickstream = enrichClickstreamWithListing();
+        KTable<String, UserProfile> userProfiles = aggregateClickstream(enrichedClickstream);
         userProfiles = enrichWithUserData(userProfiles);
         writeResult(userProfiles);
     }
 
     private void initSerdes() {
-        userProfileSpecificAvroSerde = new SpecificAvroSerde<>();
-        userProfileSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
-
         clickstreamSpecificAvroSerde = new SpecificAvroSerde<>();
         clickstreamSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
 
@@ -53,6 +52,12 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
 
         listingsSpecificAvroSerde = new SpecificAvroSerde<>();
         listingsSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
+
+        enrichedClickstreamSpecificAvroSerde = new SpecificAvroSerde<>();
+        enrichedClickstreamSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
+
+        userProfileSpecificAvroSerde = new SpecificAvroSerde<>();
+        userProfileSpecificAvroSerde.configure(Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081"), false);
     }
 
     private void readFromKafka(KStreamBuilder builder) {
@@ -61,12 +66,20 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
         listings = builder.globalTable(Serdes.String(), listingsSpecificAvroSerde, LISTINGS_TOPIC);
     }
 
-    private KTable<String, UserProfile> aggregateClickstream() {
-        return userActions
-                .groupByKey(Serdes.String(), clickstreamSpecificAvroSerde)
+    private KStream<String, EnrichedClickstream> enrichClickstreamWithListing() {
+        return userActions.leftJoin(
+                listings,
+                (leftKey, leftValue) -> leftValue.getListingId().toString(),
+                userProfileService::enrichClickstreamWithListing
+        );
+    }
+
+    private KTable<String, UserProfile> aggregateClickstream(KStream<String, EnrichedClickstream> enrichedClickstream) {
+        return enrichedClickstream
+                .groupByKey(Serdes.String(), enrichedClickstreamSpecificAvroSerde)
                 .aggregate(
                         userProfileService::emptyProfile,
-                        userProfileService::aggregateProfile,
+                        userProfileService::updateUserProfileWithNewClickstreamEvent,
                         userProfileSpecificAvroSerde
                 );
     }

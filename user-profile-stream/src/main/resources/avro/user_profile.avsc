@@ -11,6 +11,15 @@
   {
     "namespace": "com.github.piotrkalanski",
     "type": "record",
+    "name": "ItemWithScore",
+    "fields": [
+      {"name": "item_value", "type": "string"},
+      {"name": "item_score", "type": "double"}
+    ]
+  },
+  {
+    "namespace": "com.github.piotrkalanski",
+    "type": "record",
     "name": "UserProfile",
     "fields": [
       {"name": "user_id", "type": "string"},
@@ -22,7 +31,10 @@
       {"name": "user_name", "type": ["null", "string"], "default": null},
       {"name": "user_title", "type": ["null", "string"], "default": null},
       {"name": "user_gender", "type": ["null", "string"], "default": null},
-      {"name": "user_city", "type": ["null", "string"], "default": null}
+      {"name": "user_city", "type": ["null", "string"], "default": null},
+      {"name": "job_titles_scores", "type": {"type": "array", "items": "com.github.piotrkalanski.ItemWithScore"}, "default": []},
+      {"name": "disciplines_scores", "type": {"type": "array", "items": "com.github.piotrkalanski.ItemWithScore"}, "default": []},
+      {"name": "cities_scores", "type": {"type": "array", "items": "com.github.piotrkalanski.ItemWithScore"}, "default": []}
     ]
   }
 ]

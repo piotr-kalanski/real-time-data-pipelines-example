@@ -1,11 +1,9 @@
 package com.github.piotrkalanski.service;
 
-import com.github.piotrkalanski.Clickstream;
-import com.github.piotrkalanski.DeviceUsage;
-import com.github.piotrkalanski.User;
-import com.github.piotrkalanski.UserProfile;
+import com.github.piotrkalanski.*;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,24 +16,31 @@ public class UserProfileService {
                 .build();
     }
 
-    public UserProfile aggregateProfile(String userId, Clickstream action, UserProfile userProfile) {
-        List<DeviceUsage> deviceUsage = calculateDeviceUsage(action, userProfile.getDeviceUsage());
+    public UserProfile updateUserProfileWithNewClickstreamEvent(String userId, EnrichedClickstream action, UserProfile userProfile) {
+        List<DeviceUsage> deviceUsage = calculateDeviceUsage(action.getClickstreamEvent(), userProfile.getDeviceUsage());
+        List<CharSequence> listings = calculateVisitedListings(userProfile.getListings(), action.getClickstreamEvent());
 
         return UserProfile
                 .newBuilder()
                 .setUserId(userId)
                 .setActionsCount(userProfile.getActionsCount() + 1)
-                .setLastAction(action.getEventDate().getMillis())
+                .setLastAction(action.getClickstreamEvent().getEventDate().getMillis())
                 .setDeviceUsage(deviceUsage)
                 .setFavouriteDevice(calculateFavouriteDevice(deviceUsage))
-                .setListings(calculateListings(userProfile.getListings(), action))
+                .setListings(listings)
+                .setJobTitlesScores(updateItemsScores(userProfile.getJobTitlesScores(), action.getListingJobTitle()))
+                .setDisciplinesScores(updateItemsScores(userProfile.getDisciplinesScores(), action.getListingDiscipline()))
+                .setCitiesScores(updateItemsScores(userProfile.getCitiesScores(), action.getListingCity()))
                 .build();
     }
 
     public List<DeviceUsage> calculateDeviceUsage(Clickstream action, List<DeviceUsage> oldDeviceUsage) {
-        if(oldDeviceUsage.stream().allMatch(d -> !d.getDevice().equals(action.getDevice()))) {
+        List<DeviceUsage> result = new LinkedList<>();
+        result.addAll(oldDeviceUsage);
+
+        if(oldDeviceUsage.stream().noneMatch(d -> d.getDevice().equals(action.getDevice()))) {
             if(action.getDevice() != null) {
-                oldDeviceUsage.add(
+                result.add(
                         DeviceUsage
                                 .newBuilder()
                                 .setDevice(action.getDevice())
@@ -43,19 +48,19 @@ public class UserProfileService {
                                 .build()
                 );
             }
-            return oldDeviceUsage;
         }
         else {
-            return oldDeviceUsage
-                    .stream()
-                    .map(du -> {
-                        if (du.getDevice().equals(action.getDevice())) {
-                            du.setActionsCount(du.getActionsCount() + 1);
-                        }
-                        return du;
-                    })
-                    .collect(Collectors.toList());
+            result = result
+                .stream()
+                .peek(du -> {
+                    if (du.getDevice().equals(action.getDevice())) {
+                        du.setActionsCount(du.getActionsCount() + 1);
+                    }
+                })
+                .collect(Collectors.toList());
         }
+
+        return result;
     }
 
     public CharSequence calculateFavouriteDevice(List<DeviceUsage> deviceUsage) {
@@ -66,10 +71,15 @@ public class UserProfileService {
                 .getDevice();
     }
 
-    public List<CharSequence> calculateListings(List<CharSequence> listings, Clickstream action) {
-        if(!listings.stream().anyMatch(x -> x.equals(action.getListingId())))
-            listings.add(action.getListingId());
-        return listings;
+    public List<CharSequence> calculateVisitedListings(List<CharSequence> listings, Clickstream action) {
+        List<CharSequence> result = listings;
+        if(!listings.stream().anyMatch(x -> x.equals(action.getListingId()))) {
+            result = new LinkedList<>();
+            result.addAll(listings);
+            result.add(action.getListingId());
+        }
+
+        return result;
     }
 
     public UserProfile mergeUserProfileWithUser(UserProfile userProfile, User user) {
@@ -79,4 +89,46 @@ public class UserProfileService {
         userProfile.setUserGender(user.getGender());
         return userProfile;
     }
+
+    public EnrichedClickstream enrichClickstreamWithListing(Clickstream clickstream, Listing listing) {
+        return EnrichedClickstream.newBuilder()
+                .setClickstreamEvent(clickstream)
+                .setListingCity(listing.getCity())
+                .setListingJobTitle(listing.getJobTitle())
+                .setListingDiscipline(listing.getDiscipline())
+                .build();
+    }
+
+    public List<ItemWithScore> updateItemsScores(List<ItemWithScore> itemWithScoreList, CharSequence element) {
+        List<ItemWithScore> result = new LinkedList<>();
+        result.addAll(itemWithScoreList);
+
+        if(element != null) {
+            result = new LinkedList<>();
+            result.addAll(itemWithScoreList);
+
+            if(itemWithScoreList.stream().noneMatch(itemWithScore -> itemWithScore.getItemValue().equals(element))) {
+                result.add(
+                  ItemWithScore
+                          .newBuilder()
+                          .setItemValue(element)
+                          .setItemScore(1.0)
+                          .build()
+                );
+            }
+            else {
+                result = result
+                    .stream()
+                    .peek(itemWithScore -> {
+                        if (itemWithScore.getItemValue().equals(element)) {
+                            itemWithScore.setItemScore(itemWithScore.getItemScore() + 1.0);
+                        }
+                    })
+                    .collect(Collectors.toList());;
+            }
+        }
+
+        return result;
+    }
+
 }
