@@ -1,5 +1,6 @@
-package com.github.piotrkalanski;
+package com.github.piotrkalanski.service;
 
+import com.github.piotrkalanski.*;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -9,9 +10,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class ApplicationMainTest {
+public class UserProfileServiceTest {
 
-    private ApplicationMain app = new ApplicationMain();
+    private UserProfileService userProfileService = new UserProfileService();
 
     @Test
     public void testCalculateFavouriteDevice() {
@@ -20,7 +21,7 @@ public class ApplicationMainTest {
                 DeviceUsage.newBuilder().setDevice("MOBILE").setActionsCount(1L).build()
         );
 
-        assertEquals("DESKTOP", app.calculateFavouriteDevice(devices));
+        assertEquals("DESKTOP", userProfileService.calculateFavouriteDevice(devices));
     }
 
     @Test
@@ -37,7 +38,7 @@ public class ApplicationMainTest {
                 .setDevice("DESKTOP")
                 .build();
 
-        assertEquals(expectedDevices, app.calculateDeviceUsage(action, oldDevices));
+        assertEquals(expectedDevices, userProfileService.calculateDeviceUsage(action, oldDevices));
     }
 
     @Test
@@ -55,7 +56,7 @@ public class ApplicationMainTest {
                 .setEventDate(DateTime.now())
                 .build();
 
-        assertEquals(expectedDevices, app.calculateDeviceUsage(action, oldDevices));
+        assertEquals(expectedDevices, userProfileService.calculateDeviceUsage(action, oldDevices));
     }
 
     @Test
@@ -76,7 +77,7 @@ public class ApplicationMainTest {
                 .setDevice("MOBILE")
                 .build();
 
-        assertEquals(expectedDevices, app.calculateDeviceUsage(action, oldDevices));
+        assertEquals(expectedDevices, userProfileService.calculateDeviceUsage(action, oldDevices));
     }
 
     @Test
@@ -97,7 +98,7 @@ public class ApplicationMainTest {
                 .setDevice("DESKTOP")
                 .build();
 
-        assertEquals(expectedDevices, app.calculateDeviceUsage(action, oldDevices));
+        assertEquals(expectedDevices, userProfileService.calculateDeviceUsage(action, oldDevices));
     }
 
     @Test
@@ -114,7 +115,7 @@ public class ApplicationMainTest {
                 .build();
         List<String> expected = Arrays.asList("listing1", "listing2", "listing3");
 
-        assertEquals(expected, app.calculateListings(initListings, action));
+        assertEquals(expected, userProfileService.calculateListings(initListings, action));
     }
 
     @Test
@@ -129,7 +130,7 @@ public class ApplicationMainTest {
                 .build();
         List<String> expected = Arrays.asList("listing1", "listing2");
 
-        assertEquals(expected, app.calculateListings(initListings, action));
+        assertEquals(expected, userProfileService.calculateListings(initListings, action));
     }
 
     @Test
@@ -147,7 +148,7 @@ public class ApplicationMainTest {
                 .setCity("city")
                 .build();
 
-        app.mergeUserProfileWithUser(userProfile, user);
+        userProfileService.mergeUserProfileWithUser(userProfile, user);
 
         assertEquals(user.getUserName(), userProfile.getUserName());
         assertEquals(user.getCity(), userProfile.getUserCity());
