@@ -91,12 +91,13 @@ public class UserProfileService {
     }
 
     public EnrichedClickstream enrichClickstreamWithListing(Clickstream clickstream, Listing listing) {
-        return EnrichedClickstream.newBuilder()
-                .setClickstreamEvent(clickstream)
+        EnrichedClickstream.Builder builder = EnrichedClickstream.newBuilder().setClickstreamEvent(clickstream);
+        if(listing != null)
+            builder
                 .setListingCity(listing.getCity())
                 .setListingJobTitle(listing.getJobTitle())
-                .setListingDiscipline(listing.getDiscipline())
-                .build();
+                .setListingDiscipline(listing.getDiscipline());
+        return builder.build();
     }
 
     public List<ItemWithScore> updateItemsScores(List<ItemWithScore> itemWithScoreList, CharSequence element) {

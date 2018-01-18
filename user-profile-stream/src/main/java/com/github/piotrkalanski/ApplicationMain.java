@@ -15,7 +15,7 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
     private static final String CLICKSTREAM_TOPIC = "raw-avro-clickstream";
     private static final String USERS_TOPIC = "raw-avro-users";
     private static final String LISTINGS_TOPIC = "raw-avro-listings";
-    private static final String OUTPUT_TOPIC = "user-profile-v01";
+    private static final String OUTPUT_TOPIC = "user-profile";
 
     private UserProfileService userProfileService = new UserProfileService();
 
@@ -80,12 +80,18 @@ public class ApplicationMain extends KafkaStreamsApplicationBase {
                 .aggregate(
                         userProfileService::emptyProfile,
                         userProfileService::updateUserProfileWithNewClickstreamEvent,
-                        userProfileSpecificAvroSerde
+                        userProfileSpecificAvroSerde,
+                        "user-profile-aggregate-clickstream-store"
                 );
     }
 
     private KTable<String, UserProfile> enrichWithUserData(KTable<String, UserProfile> usersProfiles) {
-        return usersProfiles.join(users, userProfileService::mergeUserProfileWithUser);
+        return usersProfiles.join(
+                users,
+                userProfileService::mergeUserProfileWithUser,
+                userProfileSpecificAvroSerde,
+                "user-profile-enrich-profile-with-users-store"
+        );
     }
 
     private void writeResult(KTable<String, UserProfile> usersProfiles) {
